@@ -6,7 +6,7 @@ using namespace std;
 
 int main() {
 
-    srand(time(nullptr)); 
+    srand(time(nullptr)); // организаци€ рандома
     
     float C[5][6]; // —оздаем двумерный массив C
 
