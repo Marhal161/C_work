@@ -248,10 +248,10 @@ public:
 class MySortedArray : public MyArrayChild {
 public:
 	MySortedArray(int Dimension = 100) : MyArrayChild(Dimension) {
-		cout << "Конструктор MySortedArray" << endl;
+		cout << "Constructor MySortedArray" << endl;
 	}
 
-	MySortedArray FilterArrayByCondition() override {
+	MySortedArray FilterArrayByCondition() {
 		MySortedArray resultArray(count);
 		int j = 0;
 		for (int i = 0; i < count; i++) {
@@ -263,7 +263,7 @@ public:
 		return resultArray;
 	}
 
-	void push(double value) override {
+	void push(double value) {
 		int i = count - 1;
 		while (i >= 0 && ptr[i] > value) {
 			ptr[i + 1] = ptr[i];
@@ -273,7 +273,7 @@ public:
 		count++;
 	}
 
-	int IndexOf(double value) override {
+	int IndexOf(double value) {
 		int low = 0;
 		int high = count - 1;
 
@@ -297,21 +297,49 @@ public:
 
 int main()
 {
-	if (true)
-	{
-		MyArrayParent arr;
-		int i = 0;
-		for (i = 0; i < 10; i++)
-		{
-			arr.push(i + 1);
-		}
-		MyArrayParent p1;
+	setlocale(0, "");
+	// Create an instance of MySortedArray
+	MySortedArray sortedArr(15);
 
-		p1 = arr;
-		p1.print();
-		cout << endl;
+	// Fill the array with some values
+	for (int i = 15; i > 0; i--) {
+		sortedArr.push(i * 1000 + i * 100 + i * 10 + i);
 	}
-	char c; cin >> c;
+
+	// Display the sorted array
+	sortedArr.print();
+	cout << endl;
+
+	// Test FilterArrayByCondition from MySortedArray
+	MySortedArray filteredArr = sortedArr.FilterArrayByCondition();
+	cout << "Filtered Array by Condition: ";
+	filteredArr.print();
+	cout << endl;
+
+	// Test IndexOf function
+	cout << "Index of 7777 in sorted array: " << sortedArr.IndexOf(7777) << endl;
+
+	// Test MyArrayChild operations
+	MyArrayChild childArr(10);
+	childArr.push(1234);
+	childArr.push(5678);
+	cout << "Child Array: ";
+	childArr.print();
+	cout << endl;
+
+	// Test operator+ function
+	MyArrayChild childArr2 = childArr + 9999;
+	cout << "Child Array after adding 9999: ";
+	childArr2.print();
+	cout << endl;
+
+	// Test FilterArrayByCondition from MyArrayChild
+	MyArrayChild filteredChildArr = childArr2.FilterArrayByCondition();
+	cout << "Filtered Child Array by Condition: ";
+	filteredChildArr.print();
+	cout << endl;
+
 	return 0;
 }
+
 
