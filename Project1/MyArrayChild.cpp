@@ -66,7 +66,7 @@ public:
 		}
 		else
 		{
-			throw std::runtime_error("Ошибка: превышено максимальное количество элементов в массиве.");
+			throw runtime_error("Ошибка: превышено максимальное количество элементов в массиве.");
 		}
 	}
 
@@ -78,7 +78,7 @@ public:
 
 	double& operator[](int index) {
 		if (index < 0 || index >= count) {
-			throw std::out_of_range("Index out of range");
+			throw out_of_range("Index out of range");
 		}
 		return ptr[index];
 	}
@@ -139,12 +139,12 @@ public:
 
 };
 
-class MyAraayChild : public MyArrayParent
+class MyArrayChild : public MyArrayParent
 {
 public:
-	MyAraayChild(int Dimension = 100) : MyArrayParent(Dimension) { cout << "My array child constructor"; }
+	MyArrayChild(int Dimension = 100) : MyArrayParent(Dimension) { cout << "My array child constructor"; }
 
-	~MyAraayChild() { cout << "MyArrayChild destructor"; }
+	~MyArrayChild() { cout << "MyArrayChild destructor"; }
 
 	void RemoveAt(int index = -1) {
 		if (index == -1) {
@@ -189,18 +189,111 @@ public:
 					count++;
 				}
 				else {
-					throw std::runtime_error("Ошибка: превышено максимальное количество элементов в массиве.");
+					throw runtime_error("Ошибка: превышено максимальное количество элементов в массиве.");
 				}
 			}
 			else {
-				throw std::invalid_argument("Ошибка: не передано значение для вставки.");
+				throw invalid_argument("Ошибка: не передано значение для вставки.");
 			}
 		}
 	}
 
+	MyArrayChild SubSequence(int StartIndex = 0, int Length = -1) {
+		if (StartIndex < 0 || StartIndex >= count) {
+			throw out_of_range("StartIndex is out of range");
+		}
+
+		if (Length == -1 || Length > count - StartIndex) {
+			Length = count - StartIndex;
+		}
+
+		MyArrayChild subArray(Length);
+		for (int i = 0; i < Length; i++) {
+			subArray.push(ptr[StartIndex + i]);
+		}
+
+		return subArray;
+	}
+
+
+	MyArrayChild FilterArrayByCondition() {
+		MyArrayChild resultArray(count);
+		for (int i = 0; i < count; i++) {
+			int number = static_cast<int>(ptr[i]); 
+			int a = number / 10000;
+			int b = (number / 1000) % 10;
+			int c = (number / 100) % 10;
+			int d = (number / 10) % 10;
+			int e = number % 10;
+
+			if (a * b == c && d * e == c) {
+				resultArray.push(ptr[i]); 
+			}
+		}
+
+		return resultArray;
+	}
+
+	MyArrayChild operator+(double value) {
+		MyArrayChild result(*this); 
+		result.push(value); 
+		return result;
+	}
+
+
 
 
 };
+
+class MySortedArray : public MyArrayChild {
+public:
+	MySortedArray(int Dimension = 100) : MyArrayChild(Dimension) {
+		cout << "Конструктор MySortedArray" << endl;
+	}
+
+	MySortedArray FilterArrayByCondition() override {
+		MySortedArray resultArray(count);
+		int j = 0;
+		for (int i = 0; i < count; i++) {
+			if (i == 0 || ptr[i] >= ptr[i - 1]) {
+				resultArray.push(ptr[i]);
+				j++;
+			}
+		}
+		return resultArray;
+	}
+
+	void push(double value) override {
+		int i = count - 1;
+		while (i >= 0 && ptr[i] > value) {
+			ptr[i + 1] = ptr[i];
+			i--;
+		}
+		ptr[i + 1] = value;
+		count++;
+	}
+
+	int IndexOf(double value) override {
+		int low = 0;
+		int high = count - 1;
+
+		while (low <= high) {
+			int mid = low + (high - low) / 2;
+			if (ptr[mid] == value) {
+				return mid;
+			}
+			else if (ptr[mid] < value) {
+				low = mid + 1;
+			}
+			else {
+				high = mid - 1;
+			}
+		}
+
+		return -1;
+	}
+};
+
 
 int main()
 {
@@ -221,3 +314,4 @@ int main()
 	char c; cin >> c;
 	return 0;
 }
+
