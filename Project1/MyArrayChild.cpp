@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -21,6 +22,13 @@ public:
 	MyArrayParent(double* arr, int len)
 	{
 		cout << "MyArrayConstructor" << endl;
+		capacity = len; 
+		count = len;
+		ptr = new double[capacity]; 
+
+		for (int i = 0; i < count; i++) {
+			ptr[i] = arr[i]; 
+		}
 	}
 
 	~MyArrayParent()
@@ -49,14 +57,17 @@ public:
 			ptr[index] = value;
 	}
 
-	void push(double value) 
+	void push(double value)
 	{
 		if (count < capacity)
 		{
 			ptr[count] = value;
 			count++;
 		}
-
+		else
+		{
+			throw std::runtime_error("Ошибка: превышено максимальное количество элементов в массиве.");
+		}
 	}
 
 	void RemoveLastValue()
@@ -65,21 +76,42 @@ public:
 			count--;
 	}
 
-	double& operator[](int index)
-	{
-
-
+	double& operator[](int index) {
+		if (index < 0 || index >= count) {
+			throw std::out_of_range("Index out of range");
+		}
+		return ptr[index];
 	}
 
-	MyArrayParent& operator=(const MyArrayParent& V)
-	{
+	MyArrayParent& operator=(const MyArrayParent& V) {
 		cout << "operator = " << endl;
+
+		if (this != &V) { 
+			if (ptr != nullptr) {
+				delete[] ptr;
+				ptr = nullptr;
+			}
+
+			capacity = V.capacity;
+			count = V.count;
+			ptr = new double[capacity];
+			for (int i = 0; i < count; i++) {
+				ptr[i] = V.ptr[i];
+			}
+		}
+
+		return *this; 
 	}
 
-	MyArray(const MyArrayParent& V)
-	{
-		cout << "Copy constructor";
+	MyArrayParent(const MyArrayParent& V) : capacity(V.capacity), count(V.count) {
+		cout << "Copy constructor" << endl;
+		ptr = new double[capacity];
+
+		for (int i = 0; i < count; i++) {
+			ptr[i] = V.ptr[i]; 
+		}
 	}
+
 
 	void print()
 	{
@@ -94,6 +126,17 @@ public:
 		cout << "}";
 	}
 
+	int IndexOf(double value)
+	{
+		for (int i = 0; i < count; i++) {
+			if (ptr[i] == value) {
+				return i;
+			}
+		}
+
+		return -1; 
+	}
+
 };
 
 class MyAraayChild : public MyArrayParent
@@ -102,6 +145,8 @@ public:
 	MyAraayChild(int Dimension = 100) : MyArrayParent(Dimension) { cout << "My array child constructor"; }
 
 	~MyAraayChild() { cout << "MyArrayChild destructor"; }
+
+
 };
 
 int main()
