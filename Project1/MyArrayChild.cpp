@@ -146,6 +146,59 @@ public:
 
 	~MyAraayChild() { cout << "MyArrayChild destructor"; }
 
+	void RemoveAt(int index = -1) {
+		if (index == -1) {
+			if (count > 0) {
+				count--;
+			}
+		}
+		else if (index >= 0 && index < count) {
+			for (int i = index; i < count - 1; i++) {
+				ptr[i] = ptr[i + 1];
+			}
+			count--;
+		}
+	}
+
+	int IndexOf(double value, bool bFindFromStart = true) {
+		if (bFindFromStart) {
+			for (int i = 0; i < count; i++) {
+				if (ptr[i] == value) {
+					return i; 
+				}
+			}
+		}
+		else {
+			for (int i = count - 1; i >= 0; i--) {
+				if (ptr[i] == value) {
+					return i; 
+				}
+			}
+		}
+		return -1; 
+	}
+
+	void InsertAt(int index, double value = -1) {
+		if (index >= 0 && index <= count) {
+			if (value != -1) {
+				if (count < capacity) {
+					for (int i = count; i > index; i--) {
+						ptr[i] = ptr[i - 1];
+					}
+					ptr[index] = value;
+					count++;
+				}
+				else {
+					throw std::runtime_error("Ошибка: превышено максимальное количество элементов в массиве.");
+				}
+			}
+			else {
+				throw std::invalid_argument("Ошибка: не передано значение для вставки.");
+			}
+		}
+	}
+
+
 
 };
 
